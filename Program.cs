@@ -43,7 +43,6 @@ class Program
             ThresFree = (nuint)NativeMemory.AllocZeroed(countNeeded * sizeof(ulong));
             thres = ThresFree;
             inverses = InverseFree;
-            Console.WriteLine("ok ok");
 
             count4 = (countNeeded + 3u) & ~3u;
             count8 = (countNeeded + 7u) & ~7u;
@@ -66,7 +65,6 @@ class Program
                 }
             }
         }
-        Console.WriteLine("nice so far");
         double length = 0;
         ulong ticks = 0;
         ulong total = 0;
@@ -74,7 +72,6 @@ class Program
         ulong upTo = (limit / totalPrimes);
         ulong mid = totalPrimes / 2;
         Task.Run(() => IsPrime(7)).Wait();
-        Console.WriteLine("great great");
         if (warmUp)
         {
             for (int ii = 0; ii < 100001; ii++)
@@ -93,7 +90,6 @@ class Program
         }
         try
         {
-            Console.WriteLine("survived");
             timer.Start();
             total = 0;
             ulong i = upTo;
