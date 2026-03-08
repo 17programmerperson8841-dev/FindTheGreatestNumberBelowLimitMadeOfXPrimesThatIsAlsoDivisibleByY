@@ -5,6 +5,7 @@ using System.Runtime.Intrinsics.X86;
 using System.Runtime.Intrinsics;
 using System.Numerics;
 
+
 /*
     Johny has a lot of time on his hands.
     He decides to find the largest positive integer less than 10,000 that is the
@@ -17,9 +18,9 @@ using System.Numerics;
 [module: SkipLocalsInit]
 class Program
 {
-    public const ulong limit = 10000;
-    public const ulong totalPrimes = 5;
-    public const ulong divisiblity = 3;
+    public const ulong limit = 1000000000000;
+    public const ulong totalPrimes = 10001;
+    public const ulong divisiblity = 1001;
     public static nuint thres = 0;
     public static nuint inverses = 0;
     public static nuint InverseFree = 0;
@@ -32,6 +33,7 @@ class Program
     public static nuint count8 = 0;
     public static bool brute = false;
     public static bool warmUp = false;
+    public static bool aligned = false;
 
     public async static Task Main(string[] args)
     {
@@ -39,18 +41,27 @@ class Program
         Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
         unsafe
         {
-            InverseFree = (nuint)NativeMemory.AllocZeroed(countNeeded * sizeof(ulong));
-            ThresFree = (nuint)NativeMemory.AllocZeroed(countNeeded * sizeof(ulong));
+            if (args.Length > 0)
+            {
+                if (args.Contains("--brute")) brute = true;
+                if(args.Contains("--warmup")) warmUp = true;
+                if(args.Contains("--aligned")) aligned = true;
+            }
+            if (aligned)
+            {
+                InverseFree = (nuint)NativeMemory.AlignedAlloc(countNeeded * sizeof(ulong), 64);
+                ThresFree = (nuint)NativeMemory.AlignedAlloc(countNeeded * sizeof(ulong), 64);
+            }
+            else
+            {
+                InverseFree = (nuint)NativeMemory.AllocZeroed(countNeeded * sizeof(ulong));
+                ThresFree = (nuint)NativeMemory.AllocZeroed(countNeeded * sizeof(ulong));
+            }
             thres = ThresFree;
             inverses = InverseFree;
 
             count4 = (countNeeded + 3u) & ~3u;
             count8 = (countNeeded + 7u) & ~7u;
-            if (args.Length > 0)
-            {
-                if (args.Contains("--brute")) brute = true;
-                if(args.Contains("--warmup")) warmUp = true;
-            }
 
             ulong* invWalk = (ulong*)inverses;
             ulong* thrWalk = (ulong*)thres;
@@ -163,8 +174,16 @@ class Program
         {
             unsafe
             {
-                NativeMemory.Free((void*)InverseFree);
-                NativeMemory.Free((void*)ThresFree);
+                if (aligned)
+                {
+                NativeMemory.AlignedFree((void*)InverseFree);
+                NativeMemory.AlignedFree((void*)ThresFree);
+                }
+                else
+                {
+                    NativeMemory.Free((void*)InverseFree);
+                    NativeMemory.Free((void*)ThresFree);
+                }
             }
         }
 
