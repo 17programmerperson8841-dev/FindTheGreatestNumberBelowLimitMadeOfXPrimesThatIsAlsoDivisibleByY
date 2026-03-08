@@ -17,9 +17,9 @@ using System.Numerics;
 [module: SkipLocalsInit]
 class Program
 {
-    public const ulong limit = 250000000000000000;
-    public const ulong totalPrimes = 10001;
-    public const ulong divisiblity = 1009;
+    public const ulong limit = 10000;
+    public const ulong totalPrimes = 5;
+    public const ulong divisiblity = 3;
     public static readonly bool wheelFact = true;
     public static nuint thres = 0;
     public static nuint inverses = 0;
