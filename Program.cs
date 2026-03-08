@@ -18,9 +18,9 @@ using System.Numerics;
 [module: SkipLocalsInit]
 class Program
 {
-    public const ulong limit = 1000000000000;
-    public const ulong totalPrimes = 10001;
-    public const ulong divisiblity = 1001;
+    public const ulong limit = 10000;
+    public const ulong totalPrimes = 5;
+    public const ulong divisiblity = 3;
     public static nuint thres = 0;
     public static nuint inverses = 0;
     public static nuint InverseFree = 0;
@@ -44,8 +44,8 @@ class Program
             if (args.Length > 0)
             {
                 if (args.Contains("--brute")) brute = true;
-                if(args.Contains("--warmup")) warmUp = true;
-                if(args.Contains("--aligned")) aligned = true;
+                if (args.Contains("--warmup")) warmUp = true;
+                if (args.Contains("--aligned")) aligned = true;
             }
             if (aligned)
             {
@@ -104,32 +104,14 @@ class Program
             timer.Start();
             total = 0;
             ulong i = upTo;
-            if (brute)
+            while (true)
             {
-                Parallel.For(0, int.MaxValue, (index, ParallelLoopState) =>
+                if (IsPrime(i))
                 {
-                    ulong candidate = (ulong)(upTo - (ulong)index);
-                    if (IsPrime(candidate))
-                    {
-                        if (candidate > primes[mid])
-                        {
-                            primes[mid] = candidate;
-                            ParallelLoopState.Stop();
-                        }
-                    }
-                });
-            }
-            else
-            {
-                while (true)
-                {
-                    if (IsPrime(i))
-                    {
-                        primes[mid] = i;
-                        break;
-                    }
-                    i--;
+                    primes[mid] = i;
+                    break;
                 }
+                i--;
             }
             if (brute)
             {
@@ -176,8 +158,8 @@ class Program
             {
                 if (aligned)
                 {
-                NativeMemory.AlignedFree((void*)InverseFree);
-                NativeMemory.AlignedFree((void*)ThresFree);
+                    NativeMemory.AlignedFree((void*)InverseFree);
+                    NativeMemory.AlignedFree((void*)ThresFree);
                 }
                 else
                 {
