@@ -242,8 +242,6 @@ class Program
 
                 var vCom = Avx512F.CompareLessThanOrEqual(vRes, vThr);
 
-                //if (!vCom.Equals(Vector512<ulong>.Zero)) return false;
-
                 if (Vector512.EqualsAny(vCom, Vector512<ulong>.Zero.WithElement(0, 0xFFFFFFFFFFFFFFFFu)))
                 {
                     if (vCom != Vector512<ulong>.Zero) return false;
